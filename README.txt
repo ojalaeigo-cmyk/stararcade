@@ -1,2 +1,2 @@
-STAR KING ARCADE DIFFICULTY + BOSS AUTOFIRE
-Raskusloogika jäetud alles. Lisatud ainult bossi ajal automaatne relvatuli.
+STAR KING ARCADE DIFFICULTY + AUTOFIRE FIXED
+Raskusloogika sama. Lisatud bossi ajal automaattuli.
