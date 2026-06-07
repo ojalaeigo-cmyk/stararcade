@@ -40,10 +40,10 @@ button{border:0;border-radius:999px;padding:14px 24px;font-size:17px;font-weight
 <p>Catch stars, protect your shield and survive 30 increasingly harder levels.</p>
 <div class="legend">
 <div>⭐ Golden Star gives points and restores shield every 5 stars.</div>
-<div>🟢 Emerald Star upgrades weapon or increases hull.</div>
+<div>🟢 Emerald Star upgrades weapon or increases Hull / Max Shield.</div>
 <div>🔵 Azure Star damages the boss.</div>
 <div>🟥 Red Rock damages shield. If shield reaches zero, it is GAME OVER.</div>
-<div>👾 Every level ends with a boss. Your ship auto-fires and the boss shoots back.</div>
+<div>👾 Every level ends with a boss. Boss HP scales with Max Shield, Weapon and Hull.</div>
 </div>
 <input id="playerName" maxlength="18" autocomplete="nickname" placeholder="Name for leaderboard">
 <p id="wakeStatus" class="small" style="color:#ffd966">Screen lock: waiting for Start</p>
@@ -109,7 +109,12 @@ function difficulty(){
   if(level>=30)f*=1.90;
   return f;
 }
-function bossMaxHp(){return Math.ceil((85+level*20)*difficulty()*Math.pow(1.10,level-1)*(1+(weapon-1)*0.20))}
+function bossMaxHp(){
+  const shieldFactor = Math.max(1, maxShield / 100);
+  const weaponFactor = 1 + (weapon - 1) * 0.45;
+  const hullFactor = 1 + (hull - 1) * 0.35;
+  return Math.ceil((140 + level * 34) * difficulty() * Math.pow(1.10, level - 1) * shieldFactor * weaponFactor * hullFactor);
+}
 function bossSlow(){return boss?0.72:1}
 function spawnLimit(){return Math.max(10,Math.round((48-level*0.9)/difficulty()))}
 function rockChance(){return clamp(0.16+level*0.012+(difficulty()-1)*0.08,0.18,0.54)}
@@ -126,7 +131,7 @@ function hud(){
   $("levelLine").textContent=(boss?"Boss · ":"Level ")+level+" / 30 · "+LEVEL_NAMES[level-1];
 }
 function start(){
-  initAudio();score=0;level=1;levelStart=0;nextLevel=100;stars=0;weapon=1;hull=1;
+  initAudio();score=0;level=1;levelStart=0;nextLevel=200;stars=0;weapon=1;hull=1;
   shield=100;maxShield=100;spawnT=0;shotT=0;bossShotT=0;
   items=[];parts=[];texts=[];shots=[];bossShots=[];boss=null;gameEnded=false;
   running=true;paused=false;player.x=W/2;player.targetX=W/2;
@@ -156,7 +161,7 @@ function togglePause(){if(!running)return;paused=!paused;$("pauseScreen").classL
 function startBoss(){items=[];shots=[];bossShots=[];shotT=0;bossShotT=0;boss={x:W/2,y:105*S,r:36*S,hp:bossMaxHp(),max:bossMaxHp(),t:0};sfx("boss");addText(W/2,H*.30,"BOSS",true)}
 function levelUp(){
   if(level<LEVELS){
-    level++;levelStart=score;nextLevel=score+100+level*24;shield=Math.min(maxShield,shield+40);
+    level++;levelStart=score;nextLevel=score+200+level*48;shield=Math.min(maxShield,shield+40);
     addText(W/2,H*.30,"LEVEL "+level+" · "+LEVEL_NAMES[level-1],true);
   }else{
     addText(W/2,H*.30,"TO BE CONTINUED",true);
@@ -181,7 +186,7 @@ function shootBoss(){
   const count=Math.min(4,weapon);
   for(let n=0;n<count;n++){
     const off=(n-(count-1)/2)*9*S;
-    shots.push({x:player.x+off,y:player.y-25*S,vy:-8.25*S,r:4*S,damage:Math.max(1,Math.ceil(weapon*1.15))});
+    shots.push({x:player.x+off,y:player.y-25*S,vy:-8.25*S,r:4*S,damage:Math.max(1,Math.ceil(weapon*0.75))});
   }
 }
 function bossShoot(){
@@ -215,7 +220,7 @@ function collect(i){
     else{weapon=Math.min(8,weapon+1);addText(i.x,i.y,"Emerald Star · WEAPON +1",true)}
   }else if(i.type==="blue"){
     sfx("bonus");score+=15;boom(i.x,i.y,true);
-    if(boss){let d=Math.ceil(boss.max*.11);boss.hp-=d;addText(i.x,i.y,"Azure Star · BOSS -11%",true);if(boss.hp<=0){boss=null;shots=[];bossShots=[];levelUp()}}
+    if(boss){let d=Math.ceil(boss.max*.07);boss.hp-=d;addText(i.x,i.y,"Azure Star · BOSS -7%",true);if(boss.hp<=0){boss=null;shots=[];bossShots=[];levelUp()}}
   }else{
     damage(redDamage());
   }
