@@ -2,7 +2,7 @@
   "name": "Star King",
   "short_name": "Star King",
   "description": "Star King arcade with longer levels and boss HP scaling with max shield, weapon and hull.",
-  "start_url": "./?bossbalance=1",
+  "start_url": "./?bossbalance_shieldtext=1",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

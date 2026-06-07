@@ -39,7 +39,7 @@ button{border:0;border-radius:999px;padding:14px 24px;font-size:17px;font-weight
 <h1>Star King</h1>
 <p>Catch stars, protect your shield and survive 30 increasingly harder levels.</p>
 <div class="legend">
-<div>⭐ Golden Star gives points and restores shield every 5 stars.</div>
+<div>⭐ Yellow stars give points. Every 5 stars gives a Shield Upgrade.</div>
 <div>🟢 Emerald Star upgrades weapon or increases Hull / Max Shield.</div>
 <div>🔵 Azure Star damages the boss.</div>
 <div>🟥 Red Rock damages shield. If shield reaches zero, it is GAME OVER.</div>
@@ -213,7 +213,7 @@ function hit(o){
 function collect(i){
   if(i.type==="star"){
     sfx("star");stars++;score+=5;boom(i.x,i.y,true);
-    if(stars%5===0){maxShield+=5;shield=Math.min(maxShield,shield+22);addText(player.x,player.y-50,"Golden Star · SHIELD +22",true)}
+    if(stars%5===0){maxShield+=5;shield=Math.min(maxShield,shield+22);addText(player.x,player.y-50,"Shield Upgrade +22",true)}
   }else if(i.type==="green"){
     sfx("bonus");score+=10;boom(i.x,i.y,true);
     if(Math.random()<0.28 && hull<5){hull++;maxShield+=25;shield=maxShield;addText(i.x,i.y,"Emerald Star · HULL +1",true)}
