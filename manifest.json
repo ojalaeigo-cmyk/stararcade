@@ -1,8 +1,8 @@
 {
   "name": "Star King",
   "short_name": "Star King",
-  "description": "Star King arcade difficulty with boss autofire fixed.",
-  "start_url": "./?arcadeautofirefixed=3",
+  "description": "Star King arcade best final with restored level names and star names.",
+  "start_url": "./?bestfinalnames=1",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
